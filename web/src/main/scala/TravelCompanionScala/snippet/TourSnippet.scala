@@ -11,82 +11,54 @@ import util._
 import Helpers._
 
 import TravelCompanionScala.model._
+import api.tourVarFromAPI
 
 /**
- *  Simple enumeration to differ between own and other tours
+ * Created by IntelliJ IDEA.
+ * User: Ralf Muri
+ * Date: 09.04.2010
+ * Time: 17:14:14
+ * To change this template use File | Settings | File Templates.
  */
+
+
 object TourEnum extends Enumeration {
   val OWN_TOURS = Value("OwnTours")
   val OTHERS_TOURS = Value("OthersTours")
 }
 
-/**
- *  Set up a requestVar to track the tour object for edits and adds
- */
+// Set up a requestVar to track the TOUR object for edits and adds
 object tourVar extends RequestVar[Tour](new Tour())
 
-/**
- * Sometimes the lifecyle of a RequestVar is too short, a SessionVar is needed
- */
-object tourVarSession extends SessionVar[Tour](new Tour())
-
-/**
- *  The TourSnippet is responsible for the whole tour view
- *
- * @author Daniel Hobi
- */
-
 class TourSnippet {
-  def tour = {
-    if (tourVar.is.id == 0 && tourVarSession.is.id != 0) {
-      tourVar(tourVarSession.is)
-      tourVarSession(new Tour())
-      tourVar.is
-    } else {
-      tourVar.is
-    }
-  }
+  def tour = tourVar.is
 
-  /**
-   *  This method removes a tour and redirects the user to /tour/list afterwards
-   */
   def doRemove() = {
     val t = Model.merge(tour)
     Model.remove(t)
     S.redirectTo("/tour/list")
   }
 
-  /**
-   *  This method shows a tour with the bind helper
-   */
-  def showTour(html: NodeSeq): NodeSeq = {
+  def showTour = {
     var currentTour = tour
 
-    /**
-     *  This method renders a tour with the given html parameter
-     */
-    bind("tour", html,
-      "name" -> currentTour.name,
-      "description" -> currentTour.description,
-      "edit" -%> SHtml.link("edit", () => tourVar(currentTour), Text(?("tour.editTour"))),
-      "newStage" -%> SHtml.link("stage/edit", () => tourVar(currentTour), Text(?("tour.newStage"))))
+    //The requestVar is filled with a default tour, because Request comes from GridAPI via the sessionVar
+    if (currentTour.id == 0) {
+      currentTour = tourVarFromAPI.is
+    }
+
+    "#tour_name" #> currentTour.name &
+    "#tour_description" #> currentTour.description &
+    "#tour_edit" #> SHtml.link("edit", () => tourVar(currentTour), Text(?("tour.editTour"))) &
+    "#tour_newStage" #> SHtml.link("stage/edit", () => tourVar(currentTour), Text(?("tour.newStage")))
   }
 
-  /**
-   *  Utility methods for processing a submitted form
-   */
+  // Utility methods for processing a submitted form
   def is_valid_Tour_?(toCheck: Tour): Boolean =
     List((if (toCheck.name.length == 0) {S.error(S.?("tour.noName")); false} else true),
       (if (toCheck.owner == null) {S.error(S.?("tour.noOwner")); false} else true)).forall(_ == true)
 
-  /**
-   *  Edit a tour
-   */
-  def editTour(html: NodeSeq): NodeSeq = {
-
-    /**
-     *  Finally does the edit on the tour
-     */
+  def editTour = {
     def doEdit() = {
       if (is_valid_Tour_?(tour)) {
         Model.mergeAndFlush(tour)
@@ -100,34 +72,28 @@ class TourSnippet {
       currentTour.owner = UserManagement.currentUser
     }
 
-    /**
-     *  renders a tour to a submittable form
-     *  doEdit() will be called on submit
-     */
-    bind("tour", html,
-      "name" -> SHtml.text(currentTour.name, currentTour.name = _),
-      "description" -> SHtml.textarea(currentTour.description, currentTour.description = _),
-      "owner" -> SHtml.text(currentTour.owner.name, currentTour.owner.name = _),
-      "submit" -> SHtml.submit(?("save"), () => {tourVar(currentTour); doEdit}))
+    "#tour_name" #> SHtml.text(currentTour.name, currentTour.name = _) &
+    "#tour_description" #> SHtml.textarea(currentTour.description, currentTour.description = _) &
+    "type=submit" #> SHtml.submit(?("save"), () => {tourVar(currentTour); doEdit})
   }
 
-  /**
-   *  Lists and renders all tours either of the owner or the others
-   */
-  def listTours(html: NodeSeq): NodeSeq = {
+
+  def listTours = {
     val which = S.attr("which").map(_.toString) openOr "AllTours"
-    tours(TourEnum.withName(which)).flatMap(tour => bind("tour", html,
-      "name" -> SHtml.link("view", () => tourVar(tour), Text(tour.name)),
-      "description" -> tour.description,
-      "creator" -> tour.owner.name,
-      "addStage" -> SHtml.link("stage/edit", () => tourVar(tour), Text(?("tour.addStage"))),
-      "edit" -> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))),
-      "remove" -> SHtml.link("remove", () => {tourVar(tour); doRemove}, Text(?("remove")))))
+
+    ".tour" #> tours(TourEnum.withName(which)).map(tour => {
+      "#tour_name *" #> SHtml.link("view", () => tourVar(tour), Text(tour.name)) &
+              "#tour_description *" #> tour.description &
+              "#tour_creator *" #> tour.owner.name &
+              "#tour_addStage *" #> SHtml.link("stage/edit", () => tourVar(tour), Text(?("tour.addStage"))) &
+              "#tour_edit *" #> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))) &
+              "#tour_view *" #> SHtml.link("view", () => tourVar(tour), Text(?("view"))) &
+              "#tour_remove *" #> SHtml.link("remove", () => {
+                tourVar(tour); doRemove
+              }, Text(?("remove")))
+    })
   }
 
-  /**
-   *  returns a list of tours depending TourEnum
-   */
   private def tours(which: TourEnum.Value): List[Tour] = {
     which match {
       case TourEnum.OWN_TOURS => Model.createNamedQuery[Tour]("findTourByOwner").setParams("owner" -> UserManagement.currentUser).findAll.toList

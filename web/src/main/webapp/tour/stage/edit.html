@@ -1,4 +1,5 @@
-<lift:surround with="default" at="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
     <head>
         <!-- required plugins -->
         <!-- <script type="text/javascript" src="/scripts/date.js"></script> -->
@@ -16,89 +17,85 @@
 
         <style>
             a.dp-choose-date {
-            float: left;
-            width: 16px;
-            height: 16px;
-            padding: 0;
-            margin: 5px 3px 0;
-            display: block;
-            text-indent: -2000px;
-            overflow: hidden;
-            background: url(/scripts/calendar.png) no-repeat;
+                float: left;
+                width: 16px;
+                height: 16px;
+                padding: 0;
+                margin: 5px 3px 0;
+                display: block;
+                text-indent: -2000px;
+                overflow: hidden;
+                background: url(/scripts/calendar.png) no-repeat;
             }
 
             a.dp-choose-date.dp-disabled {
-            background-position: 0 -20px;
-            cursor: default;
+                background-position: 0 -20px;
+                cursor: default;
             }
 
             input.dp-applied {
-            width: 140px;
-            float: left;
+                width: 140px;
+                float: left;
             }
         </style>
     </head>
     <div class="content">
         <p>
-            <lift:loc locid="tour.stage.editForm">F&uuml;llen Sie das folgende Formular aus, um einen neuen
-                Reiseabschnitt zu erstellen
-            </lift:loc>
+            <span class="lift:loc?locid=tour.stage.editForm"/>
             (
-            <lift:loc locid="mandatoryFields">mit * markierte Felder sind obligatorisch</lift:loc>
+            <span class="lift:loc?locid=mandatoryFields"/>
             ):
         </p>
-        <lift:Msgs>
-            <lift:error_msg/>
-        </lift:Msgs>
-        <lift:StageSnippet:editStage form="POST">
+
+        <div class="lift:msgs">
+            <span class="lift:error_msg"/>
+        </div>
+        <div class="lift:StageSnippet.editStage?form=POST">
             <table class="form">
                 <tbody>
                 <tr>
-                    <td class="desc"><label for="title">
-                        <lift:loc locid="title">Titel</lift:loc>
-                        *</label></td>
+                    <td class="desc"><label for="title" class="lift:loc?locid=title"/>*
+                    </td>
                     <td>
-                        <stage:title/>
+                        <input type="text" id="stage_title"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="destination">
-                        <lift:loc locid="tour.stage.destination">Ziel</lift:loc>
-                        *</label></td>
+                    <td class="desc"><label for="destination" class="lift:loc?locid=tour.stage.destination"/>*
+                    </td>
                     <td>
-                        <stage:destination/>
+                        <input type="text" id="stage_destination"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tour"><label for="description">
-                        <lift:loc locid="description">Beschreibung</lift:loc>
-                    </label></td>
+                    <td class="tour"><label for="description" class="lift:loc?locid=description"/>
+                    </td>
                     <td>
-                        <stage:description/>
+                        <input type="text" id="stage_description"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="tour"><label for="dateOf">
-                        <lift:loc locid="tour.stage.startdate">Startdatum</lift:loc>
-                    </label></td>
+                    <td class="tour"><label for="dateOf" class="lift:loc?locid=tour.stage.startdate"/>
+                    </td>
                     <td>
-                        <stage:dateOf id="startdate"/>
+                        <input type="text" id="stage_startdate"/>
                     </td>
                 </tr>
                 </tbody>
             </table>
             <div class="bottomnavi">
-                <stage:submit/>
-                <lift:Menu.item name="tour" a:class="button">
-                    <lift:loc locid="cancel">Abbrechen</lift:loc>
-                </lift:Menu.item>
+                <input type="submit"/>
+
+                <div class="lift:Menu.item?name=tour">
+                    <span class="lift:loc?locid=cancel" a:class="button"/>
+                </div>
             </div>
-        </lift:StageSnippet:editStage>
+        </div>
     </div>
 
     <script type="text/javascript">
         $(function() {
-        $('#startdate').datepicker({dateFormat:'dd.mm.yy'});
+            $('#stage_startdate').datepicker({dateFormat:'dd.mm.yy'});
         });
     </script>
-</lift:surround>
+</div>

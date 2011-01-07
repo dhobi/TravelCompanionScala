@@ -1,108 +1,107 @@
-<lift:surround with="default" at="content">
-    <lift:UsrMgtHelper:showIfAuthenticated>
-        <div class="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
+    <div class="content">
+        <div class="lift:UsrMgtHelper.showIfAuthenticated">
             <h1>
-                <lift:loc locid="picture.yours">Ihre Bilder</lift:loc>
+                <span class="lift:loc?locid=picture.yours"/>
             </h1>
 
             <p>
-                <lift:loc locid="picture.yours.desc">Nachfolgend erhalten Sie eine Liste der von Ihnen hochgeladenen
-                    Bilder
-                </lift:loc>
+                <span class="lift:loc?locid=picture.yours.desc"/>:
+            </p>
+            <table class="list">
+                <tr>
+                    <th class="name">
+                        <span class="lift:loc?locid=picture"/>
+                    </th>
+                    <th>
+                        <span class="lift:loc?locid=description"/>
+                    </th>
+                    <th class="name">
+                        <span class="lift:loc?locid=belongsTo"/>
+                    </th>
+                    <th class="options">
+                        <span class="lift:loc?locid=operations"/>
+                    </th>
+                </tr>
+                 <!-- TODO: One -->
+                    <tr class="lift:PictureSnippet.listOwnPictures list">
+                        <td id="picture_thumbnail"/>
+                        <td id="picture_description"/>
+                        <td>
+                            <br/>
+                            <span id="picture_travel_link"/>
+                            <br/>
+                            <br/>
+                            <span id="picture_blog_link"/>
+                            <br/>
+                        </td>
+                        <td id="picture_remove"/>
+                    </tr>
+                    <!-- <div class="lift:PictureSnippet.listOwnPictures">
+                    <tr class="list">
+                        <td id="picture_thumbnail"/>
+                        <td id="picture_description"/>
+                        <td>
+                            <br/>
+                            <span id="picture_travel_link"/>
+                            <br/>
+                            <br/>
+                            <span id="picture_blog_link"/>
+                            <br/>
+                        </td>
+                        <td id="picture_remove"/>
+                    </tr>
+                </div>
+                  -->
+            </table>
+
+            <div class="bottomnavi">
+                <div class="lift:Menu.item?name=picture_create">
+                    <span class="lift:loc?locid=picture.addPicture" a:class="button"/>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h1>&nbsp;</h1>
+
+            <h1>
+                <span class="lift:loc?locid=picture.others"/>
+            </h1>
+
+            <p>
+                <span class="lift:loc?locid=picture.others.desc"/>
                 :
             </p>
             <table class="list">
+                <tr>
                 <th class="name">
-                    <lift:loc locid="picture">Bild</lift:loc>
+                    <span class="lift:loc?locid=picture"/>
                 </th>
                 <th>
-                    <lift:loc locid="description">Beschreibung</lift:loc>
+                    <span class="lift:loc?locid=description"/>
                 </th>
                 <th class="name">
-                    <lift:loc locid="belongsTo">Geh&ouml;rt zu</lift:loc>
+                    <span class="lift:loc?locid=owner"/>
                 </th>
-                <th class="options">
-                    <lift:loc locid="operations">Operationen</lift:loc>
+                <th class="name">
+                    <span class="lift:loc?locid=belongsTo"/>
                 </th>
-                <lift:PictureSnippet.listOwnPictures>
-                    <tr>
+                </tr>
+                    <tr class="list lift:PictureSnippet.listOtherPictures">
+                        <td id="picture_thumbnail"/>
+                        <td id="picture_description"/>
+                        <td id="picture_owner"/>
                         <td>
-                            <picture:thumbnail/>
-                        </td>
-                        <td>
-                            <picture:description/>
-                        </td>
-                        <td>
-                            <picture:belongsTo>
-                                <choose:belongsTo>
-                                    <br/>
-                                    <link:title/>
-                                    <br/>
-                                    <link:link/>
-                                    <br/>
-                                </choose:belongsTo>
-                            </picture:belongsTo>
-                        </td>
-                        <td>
-                            <picture:remove/>
+                            <br/>
+                            <span id="picture_travel_link"/>
+                            <br/>
+                            <br/>
+                            <span id="picture_blog_link"/>
+                            <br/>
                         </td>
                     </tr>
-                </lift:PictureSnippet.listOwnPictures>
             </table>
-            <lift:Menu.item name="picture_create" a:class="button">
-                <lift:loc locid="picture.addPicture">Bild Hinzuf&uuml;gen</lift:loc>
-            </lift:Menu.item>
         </div>
-    </lift:UsrMgtHelper:showIfAuthenticated>
-
-    <div class="content">
-        <h1>
-            <lift:loc locid="picture.others">Bilder anderer Mitglieder</lift:loc>
-        </h1>
-
-        <p>
-            <lift:loc locid="picture.others.desc">Nachfolgend erhalten Sie eine Anzeige der Bilder von anderen
-                Mitgliedern
-            </lift:loc>
-            :
-        </p>
-        <table class="list">
-            <th class="name">
-                <lift:loc locid="picture">Bild</lift:loc>
-            </th>
-            <th>
-                <lift:loc locid="description">Beschreibung</lift:loc>
-            </th>
-            <th class="name">
-                <lift:loc locid="owner">Besitzer</lift:loc>
-            </th>
-            <th class="name">
-                <lift:loc locid="belongsTo">Geh&ouml;rt zu</lift:loc>
-            </th>
-            <lift:PictureSnippet.listOtherPictures>
-                <tr>
-                    <td>
-                        <picture:thumbnail/>
-                    </td>
-                    <td>
-                        <picture:description/>
-                    </td>
-                    <td>
-                        <picture:owner/>
-                    </td>
-                    <td>
-                        <picture:belongsTo>
-                            <choose:belongsTo>
-                                <br/>
-                                <link:title/>
-                                <br/>
-                                <link:link/>
-                                <br/>
-                            </choose:belongsTo>
-                        </picture:belongsTo>
-                    </td>
-                </tr>
-            </lift:PictureSnippet.listOtherPictures>
-        </table>
     </div>
-</lift:surround>
+</div>

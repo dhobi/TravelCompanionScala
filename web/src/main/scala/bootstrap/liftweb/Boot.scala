@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008 WorldWide Conferencing, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
 package bootstrap.liftweb
 
 import _root_.net.liftweb.sitemap._
@@ -17,15 +32,7 @@ import TravelCompanionScala.api.{GridAPI, RestAPI}
 
 /**
  * A class that's instantiated early and run.  It allows the application
- * to modify lift's environment.
- * The boot class is used to configure the environment and behaviour of lift as well as other
- * bootstrapping issues.
- *
- * Further information on bootstrapping can be found on:
- * - "The Definitive Guide to Lift" Chapter "Bootstrapping in Lift" on
- *    http://books.google.com/books?id=5lPmFLC6sHAC&pg=PA26
- * - Technologiestudium (github link) Chapter 3.3.3 [German]
- *
+ * to modify lift's environment
  */
 class Boot {
   def boot {
@@ -42,7 +49,7 @@ class Boot {
       case (Full(Req("tour" :: "view" :: Nil, _, //google maps
       GetRequest)), _) =>
         "text/html; charset=utf-8"
-      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _, //google maps
+      case (Full(Req("tour" :: "stage" :: "view" :: Nil, _,  //google maps
       GetRequest)), _) =>
         "text/html; charset=utf-8"
       case (_, Full(accept))
@@ -52,6 +59,14 @@ class Boot {
       case _ => "text/html; charset=utf-8"
     }
 
+    //Do an easy doctype management
+    //http://github.com/zhaotq/playliftweb/blob/master/survey/src/bootstrap/liftweb/Boot.scala
+    /*/TODO Still needed ?
+    ResponseInfo.docType = {
+      case _ if S.getDocType._1 => S.getDocType._2
+      case _ => Full(DocType.xhtmlStrict)
+    }
+    */
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: "Picture" :: Nil
@@ -61,37 +76,37 @@ class Boot {
       case "images" :: _ => true
     }
 
-    // add custom dispatcher
     LiftRules.dispatch.append(RestAPI)
     LiftRules.dispatch.append(GridAPI)
     LiftRules.dispatch.append(ImageLogic.matcher)
 
+
     // Build SiteMap (used for navigation, access control...)
-    // Define If LocParams to check for access restrictions
     val LoggedIn = If(
       () => UserManagement.loggedIn_?,
       () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.??("must.be.logged.in")))))
 
-    /**
-     * helper method for providing access restriciton responses
-     * @param cond List of boolean conditions to check for access (logical or)
-     */
-    def conditionalAccess(cond: List[Boolean]) = If(
-      () => cond.exists(_ == true),
+    val EntryModification = If(
+      () => {
+        (UserManagement.currentUser == blogEntryVar.is.owner) ||
+                (blogEntryVar.is.owner == null) ||
+                (UserManagement.currentUser.roles.exists(_ == "mod"))
+      },
       () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
 
-    val EntryModification = conditionalAccess(List(
-      UserManagement.currentUser == blogEntryVar.is.owner,
-      blogEntryVar.is.owner == null,
-      UserManagement.currentUser.roles.exists(_ == "mod")))
+    val PictureModification = If(
+      () => {
+        (UserManagement.currentUser == pictureVar.is.owner) ||
+                (pictureVar.is.owner == null)
+      },
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
 
-    val PictureModification = conditionalAccess(List(
-      UserManagement.currentUser == pictureVar.is.owner,
-      pictureVar.is.owner == null))
-
-    val TourModification = conditionalAccess(List(
-      UserManagement.currentUser == tourVar.is.owner,
-      tourVar.is.owner == null))
+    val TourModification = If(
+      () => {
+        (UserManagement.currentUser == tourVar.is.owner) ||
+                (tourVar.is.owner == null)
+      },
+      () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
 
     // new DSL Syntax for creating Menu Entries, since Lift2.0-M5
     val tourMenuEntries: List[Menu] = List(
@@ -119,30 +134,19 @@ class Boot {
 
     LiftRules.setSiteMap(SiteMap(entries: _*))
 
-    /**
-     * Extractor for Tour by name
-     */
+
     object AsTour {
       def unapply(name: String): Option[Tour] = {
         Model.createNamedQuery("findTourByName", "name" -> name).findOne
       }
     }
 
-    /**
-     * Extractor for Stage by name
-     */
     object AsStage {
       def unapply(name: String): Option[Stage] = {
         Model.createNamedQuery("findStageByName", "name" -> name).findOne
       }
     }
 
-    /**
-     * Example for URL rewriting:
-     * Tours and Stages should be accessible through
-     * /tour/view/<tour-name>
-     * /tour/view/<tour-name>/<stage-name>
-     */
     LiftRules.statefulRewrite.prepend(NamedPF("TourRewrite") {
       case RewriteRequest(
       ParsePath("tour" :: "view" :: AsTour(tour) :: Nil, _, _, _), _, _) => {
@@ -155,9 +159,16 @@ class Boot {
         stageVar(stage)
         RewriteResponse("tour" :: "stage" :: "view" :: Nil)
       }
+      //      case RewriteRequest(
+      //      ParsePath("tour" :: "view" :: Nil, _, _, _), _, _) => {
+      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: Nil)
+      //      }
+      //      case RewriteRequest(
+      //      ParsePath("tour" :: "stage" :: "view" :: Nil, _, _, _), _, _) => {
+      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: stageVar.get.name :: Nil)
+      //      }
     })
 
-    // Helper function executed on each request to set the locale
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
     def localeCalculator(request: Box[HTTPRequest]): Locale = {
 
@@ -189,6 +200,8 @@ class Boot {
     }
 
     LiftRules.localeCalculator = localeCalculator _
+
+
 
     //Widgets
     TableSorter.init

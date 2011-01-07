@@ -1,43 +1,40 @@
-<lift:surround with="default" at="content">
-    <div class="content">
-        <p>
-            <lift:loc locid="tour.editForm">F&uuml;llen Sie das folgende Formular aus, um eine neue Reise zu erstellen
-                oder eine bestehende zu editieren
-            </lift:loc>
-            (
-            <lift:loc locid="mandatoryFields">mit * markierte Felder sind obligatorisch</lift:loc>
-            ):
-        </p>
-        <lift:Msgs>
-            <lift:error_msg/>
-        </lift:Msgs>
-        <lift:TourSnippet.editTour form="POST">
-            <table class="form">
-                <tr>
-                    <td class="desc"><label for="name">
-                        <lift:loc locid="title">Titel</lift:loc>
-                        *</label></td>
-                    <td>
-                        <tour:name/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="desc"><label for="desciption">
-                        <lift:loc locid="description">Beschreibung</lift:loc>
-                    </label></td>
-                    <td>
-                        <tour:description/>
-                    </td>
-                </tr>
-            </table>
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
+    <p>
 
-            <div class="bottomnavi">
-                <tour:submit/>
-                <lift:Menu.item name="tour" a:class="button">
-                    <lift:loc locid="cancel">Abbrechen</lift:loc>
-                </lift:Menu.item>
-            </div>
-
-        </lift:TourSnippet.editTour>
+    <div class="lift:loc?locid=tour.editForm"/>
+    (
+    <div class="lift:loc?locid=mandatoryFields"/>
+    ):
+    </p>
+    <div class="lift:msgs">
+        <span class="lift:error_msg"/>
     </div>
-</lift:surround>
+
+    <div class="lift:TourSnippet.editTour?form=POST">
+        <table class="form">
+            <tr>
+                <td class="desc"><label for="name" class="lift:loc?locid=title"/>*
+                </td>
+                <td>
+                    <input type="text" id="tour_name"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="desc"><label for="desciption" class="lift:loc?locid=description"/>
+                </td>
+                <td>
+                    <input type="text" id="tour_description"/>
+                </td>
+            </tr>
+        </table>
+
+        <div class="bottomnavi">
+            <input type="submit"/>
+
+            <div class="lift:Menu.item?name=tour">
+                <span class="lift:loc?locid=cancel" a:class="button"/>
+            </div>
+        </div>
+    </div>
+</div>

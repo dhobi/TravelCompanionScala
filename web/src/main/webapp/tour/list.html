@@ -1,11 +1,11 @@
-<lift:surround with="default" at="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
     <head>
-        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.all.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.all.css"/>
+        <link rel="stylesheet" type="text/css" media="screen" href="/style/ui.jqgrid.css"/>
         <script src="/scripts/i18n/grid.locale-en.js" type="text/javascript"></script>
         <script src="/scripts/jquery.jqGrid.min.js" type="text/javascript"></script>
         <script type="text/javascript">
-           var title = '<lift:loc locid="tour.others">Reisen anderer Mitglieder</lift:loc>'
             //<![CDATA[
             $(document).ready(function() {
                 jQuery("#tourtable").jqGrid({
@@ -21,86 +21,81 @@
                     rowList:[10,20,30],
                     pager: '#tourpager',
                     viewrecords: true,
-                    caption: title
+                    caption: "Reisen anderer Mitglieder"
                 });
                 //jQuery("#tourtable").jqGrid('navGrid', '#tourpager', {edit:false,add:false,del:false});
-            <!-- This function was introduced to re-render the cellvalue before it is displayed. It is currently not used-->
                 function MyLinkFormater(cellvalue, options, rowObject) {
-                    return cellvalue;
+                    //TODO fix cellvalue from api (it contains </a>> at the end, it shout be a </a>
+                    return cellvalue.html = cellvalue.replace(/\<\/a\>\>/, '</a>');
                 };
             });
             //]]>
         </script>
     </head>
 
-    <lift:UsrMgtHelper.showIfAuthenticated>
+    <div class="lift:UsrMgtHelper.showIfAuthenticated">
         <div class="content">
             <h1>
-                <lift:loc locid="tour.yours">Ihre Reisen</lift:loc>
+                <span class="lift:loc?locid=tour.yours"/>
             </h1>
 
             <p>
-                <lift:loc locid="tour.yours.desc">Nachfolgend erhalten Sie eine Liste der von Ihnen eingetragenen
-                    Reisen
-                </lift:loc>
-                :
+                <span class="lift:loc?locid=tour.yours.desc"/>:
             </p>
-            <lift:TableSorter for="listtours"/>
+
+            <div class="lift:TableSorter?for=listtours"/>
             <table class="tablesorter list" id="listtours">
                 <thead>
                 <tr>
                     <th>
-                        <lift:loc locid="name">Name</lift:loc>
+                        <span class="lift:loc?locid=name"/>
                     </th>
                     <th>
-                        <lift:loc locid="description">Beschreibung</lift:loc>
+                        <span class="lift:loc?locid=description"/>
                     </th>
                     <th>
-                        <lift:loc locid="operations">Operationen</lift:loc>
+                        <span class="lift:loc?locid=operations"/>
                     </th>
                 </tr>
                 </thead>
-
-                <tbody>
-                <lift:TourSnippet.listTours which="OwnTours">
-                    <tr>
+                <div class="lift:TourSnippet.listTours?which=OwnTours">
+                    <tbody>
+                    <tr class="tour">
                         <td>
-                            <tour:name/>
+                            <span id="tour_name"/>
                         </td>
                         <td>
-                            <tour:description/>
+                            <span id="tour_description"/>
                         </td>
                         <td>
-                            <tour:addStage/>
+                            <span id="tour_addStage"/>
                             |
-                            <tour:edit/>
+                            <span id="tour_edit"/>
                             |
-                            <tour:remove/>
+                            <span id="tour_remove"/>
                         </td>
                     </tr>
-                </lift:TourSnippet.listTours>
-                </tbody>
+                    </tbody>
+                </div>
             </table>
 
-            <lift:Menu.item name="tour_edit" a:class="button">
-                <lift:loc locid="tour.add">Reise hinzuf&uuml;gen</lift:loc>
-            </lift:Menu.item>
-
+            <div class="bottomnavi">
+                <div class="lift:Menu.item?name=tour_edit">
+                    <span class="lift:loc?locid=tour.add" a:class="button"/>
+                </div>
+            </div>
         </div>
-    </lift:UsrMgtHelper.showIfAuthenticated>
+    </div>
 
     <div class="content">
         <h1>
-            <lift:loc locid="tour.others">Reisen anderer Mitglieder</lift:loc>
+            <span class="lift:loc?locid=tour.others"/>
         </h1>
 
         <p>
-            <lift:loc locid="tour.others.desc">Nachfolgend erhalten Sie eine Liste der von anderen Mitgliedern
-                eingetragenen Reisen
-            </lift:loc>
-            :
+            <span class="lift:loc?locid=tour.others.desc"/>:
         </p>
         <table id="tourtable"></table>
         <div id="tourpager"></div>
     </div>
-</lift:surround>
+</div>

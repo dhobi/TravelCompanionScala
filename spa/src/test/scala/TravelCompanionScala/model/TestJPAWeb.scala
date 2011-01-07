@@ -45,20 +45,14 @@ class TestJPAWeb {
   def save_stuff () = {
 
     var em = emf.createEntityManager()
-    em.getTransaction.begin
+    val tx = em.getTransaction()
 
-    //Member
+    tx.begin()
 
     val member = new Member
-    member.name = "supertestuser111"
-    member.password = "1234"
-    member.email = "dhobi@hsr.ch"
-    member.forename = "Hobi"
+    member.name = "Hobi"
 
     em.persist(member)
-
-
-    ///Tour
 
     val tour = new Tour
     tour.name = "My Travel"
@@ -67,28 +61,31 @@ class TestJPAWeb {
 
 
     em.persist(tour)
-    em.getTransaction.commit
-    em.close
+
+    tx.commit()
+
+    em.close()
 
     /////assert
     em = emf.createEntityManager()
-    em.getTransaction.begin
 
     val retrieved = em.createQuery("SELECT t from Tour t where t.name = :name").setParameter("name","My Travel").getResultList.asInstanceOf[java.util.List[Tour]]
 
     assertEquals("My Travel", retrieved.get(0).name)
     println("Found " + retrieved.get(0).name)
 
-    assertEquals("Hobi",retrieved.get(0).owner.forename)
-    println("Found member " + retrieved.get(0).owner.forename)
+    assertEquals("Hobi",retrieved.get(0).owner.name)
+    println("Found member " + retrieved.get(0).owner.name)
 
-    //cleanup
+    ///clenaup
+    em.getTransaction().begin()
 
-
-    em.remove(em.getReference(classOf[Member],member.id))
     em.remove(em.getReference(classOf[Tour],tour.id))
-    em.getTransaction.commit
-    em.close
+    em.remove(em.getReference(classOf[Member],member.id))
+
+    em.getTransaction().commit()
+
+    em.close()
   }
 
   @Test
@@ -100,10 +97,7 @@ class TestJPAWeb {
     tx.begin()
 
     val member = new Member
-    member.forename = "Hobi2"
-    member.name = "supertestuser111"
-    member.password = "1234"
-    member.email = "dhobi@hsr.ch"
+    member.name = "Hobi2"
 
     em.persist(member)
 
@@ -126,10 +120,14 @@ class TestJPAWeb {
 
     ///assert
     em = emf.createEntityManager()
-    val retrieved = em.createQuery("SELECT m from Member m where m.forename = :forename").setParameter("forename","Hobi2").getResultList.asInstanceOf[java.util.List[Member]]
 
-    assertEquals("Hobi2", retrieved.get(0).forename)
-    println("Found " + retrieved.get(0).forename)
+    val retrieved = em.createQuery("SELECT m from Member m where m.name = :name").setParameter("name","Hobi2").getResultList.asInstanceOf[java.util.List[Member]]
+
+    assertEquals("Hobi2", retrieved.get(0).name)
+    println("Found " + retrieved.get(0).name)
+
+//    assertEquals("Hobi2",retrieved.get(1).name)
+//    println("Found member " + retrieved.get(1).name)
 
      ///cleanup
     em.getTransaction().begin()
@@ -142,6 +140,7 @@ class TestJPAWeb {
 
     em.close()
   }
+
 }
 
 }

@@ -1,98 +1,89 @@
-<lift:surround with="default" at="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
     <h1>
-        <lift:loc locid="blog.your">Ihr Blogeintrag</lift:loc>
+        <span class="lift:loc?locid=blog.your"/>
     </h1>
 
     <p>
-        <lift:loc locid="blog.your.desc">Nachfolgend erhalten Sie Ihren Blogeintrag sowie eine Liste der dazu erstellten
-            Kommentare
-        </lift:loc>
+        <span class="lift:loc?locid=blog.your.desc"/>
         :
     </p>
-    <lift:BlogSnippet:showEntry>
+
+    <div class="lift:BlogSnippet.showEntry">
         <table class="blog">
             <tbody>
             <tr>
-                <td>
-                    <entry:lastUpdated/>
-                </td>
+                <td id="lastUpdated"/>
             </tr>
             <tr>
                 <th>
-                    <entry:title/>
-                    <entry:tour/>
+                    <span id="title"/>
+                    <span id="tour"/>
                 </th>
             </tr>
             <tr>
-                <td>
-                    <entry:content/>
-                </td>
+                <td id="content"/>
             </tr>
             </tbody>
         </table>
-    </lift:BlogSnippet:showEntry>
-    <table class="blog">
-        <tbody>
-        <tr>
-            <th>
-                <lift:loc locid="blog.comments">Kommentare</lift:loc>
-            </th>
-        </tr>
-        <lift:BlogSnippet:showComments>
-
+    </div>
+    <div class="lift:BlogSnippet.showComments">
+        <table class="blog">
+            <tbody>
+            <tr>
+                <th>
+                    <span class="lift:loc?locid=blog.comments"/>
+                </th>
+            </tr>
             <tr>
                 <td class="header">
-                    <comment:member/>
-                    <lift:loc locid="wroteOn">schrieb am</lift:loc>
-                    <comment:dateCreated/>
+                    <span id="member"/>
+                    <span class="lift:loc?locid=wroteOn"/>
+                    <span id="dateCreated"/>
                     :
                 </td>
             </tr>
             <tr>
                 <td>
-                    <comment:content/>
-                    <br/></td>
+                    <span id="content"/>
+                    <br/>
+                </td>
             </tr>
-            <comment:options>
-                <option:list>
-                    <tr class="editieren">
-                        <td>[
-                            <link:remove/>
-                            ]
-                        </td>
-                    </tr>
-                </option:list>
-            </comment:options>
-
-        </lift:BlogSnippet:showComments>
-        </tbody>
-    </table>
-    <lift:UsrMgtHelper:showIfAuthenticated>
-        <lift:BlogSnippet:addComment form="POST">
-            <lift:Msgs>
-                <lift:error_msg/>
-            </lift:Msgs>
+            <tr class="editieren">
+                <td>[
+                    <span id="link_remove"/>
+                    ]
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="lift:UsrMgtHelper.showIfAuthenticated">
+        <div class="lift:msgs">
+            <div class="lift:error_msg"/>
+        </div>
+        <div class="lift:BlogSnippet.addComment?form=POST">
             <table class="form">
                 <tr>
                     <td class="desc">
-                        <label for="content">
-                            <lift:loc locid="mykey">Ihr Kommentar</lift:loc>
-                            :*</label>
+                        <label for="content" class="lift:loc?locid=blog.yourComment">
+                        </label>:*
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <comment:content/>
+                        <input type="text" id="comment_content"/>
                     </td>
                 </tr>
             </table>
-            <div class="bottomnavi">
-                <comment:submit/>
-                <lift:Menu.item name="blog" a:class="button">
-                    <lift:loc locid="back">Zur&uuml;ck</lift:loc>
-                </lift:Menu.item>
-            </div>
-        </lift:BlogSnippet:addComment>
 
-    </lift:UsrMgtHelper:showIfAuthenticated>
-</lift:surround>
+            <div class="bottomnavi">
+                <input type="submit"/>
+
+                <div class="lift:Menu.item?name=blog">
+                    <span class="lift:loc?locid=back" a:class="button"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

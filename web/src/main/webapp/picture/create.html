@@ -1,71 +1,66 @@
-<lift:surround with="default" at="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
     <div class="content">
         <h1>
-            <lift:loc locid="picture.new">Neues Bild hinzuf&uuml;gen</lift:loc>
+            <span class="lift:loc?locid=picture.new"/>
         </h1>
 
         <p>
-            <lift:loc locid="picture.new.desc">F&uuml;llen Sie das folgende Formular aus, um ein neues Bild
-                hochzuladen
-            </lift:loc>
+            <span class="lift:loc?locid=picture.new.desc"/>
             (
-            <lift:loc locid="mandatory">mit * markierte Felder sind
-                obligatorisch
-            </lift:loc>
+            <span class="lift:loc?locid=mandatoryFields"/>
             ):
         </p>
-        <lift:Msgs>
-            <lift:error_msg/>
-        </lift:Msgs>
-        <lift:PictureSnippet:addPicture form="POST" multipart="true">
+
+        <div class="lift:Msgs">
+            <span class="lift:error_msg"/>
+        </div>
+
+        <div class="lift:PictureSnippet.addPicture?form=POST;multipart=true">
             <table class="form">
                 <tr>
-                    <td class="desc"><label for="name">
-                        <lift:loc locid="title">Titel</lift:loc>
-                        *</label></td>
+                    <td class="desc"><label for="name" class="lift:loc?locid=title"/>*
+                    </td>
                     <td>
-                        <picture:name id="name"/>
+                        <input type="text" id="picture_name"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="file">
-                        <lift:loc locid="picture.choose">Bild ausw&auml;hlen</lift:loc>
-                        *</label></td>
+                    <td class="desc"><label for="file" class="lift:loc?locid=picture.choose"/>*
+                    </td>
                     <td>
-                        <picture:file id="file"/>
+                        <input type="file" id="picture_file"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="description">
-                        <lift:loc locid="description">Beschreibung</lift:loc>
-                    </label></td>
+                    <td class="desc"><label for="description" class="lift:loc?locid=description"/>
+                    </td>
                     <td>
-                        <picture:description id="description"/>
+                        <input type="text" id="picture_description"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="tour">
-                        <lift:loc locid="tour">Reise</lift:loc>
-                    </label></td>
+                    <td class="desc"><label for="tour" class="lift:loc?locid=tour"/>
+                    </td>
                     <td>
-                        <picture:tour id="tour"/>
+                        <input type="text" id="picture_tour"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="desc"><label for="blogEntry">
-                        <lift:loc locid="blog.entry">Blogeintrag</lift:loc>
-                    </label></td>
+                    <td class="desc"><label for="blogEntry" class="lift:loc?locid=blog.entry"/>
+                    </td>
                     <td>
-                        <picture:blogEntry id="blogEntry"/>
+                        <input type="text" id="picture_blogEntry"/>
                     </td>
                 </tr>
             </table>
             <div class="bottomnavi">
-                <picture:submit/>
-                <lift:Menu.item name="picture" a:class="button">
-                    <lift:loc locid="cancel">Abbrechen</lift:loc>
-                </lift:Menu.item>
+                <input type="submit"/>
+
+                <div class="lift:Menu.item?name=picture">
+                    <span class="lift:loc?locid=cancel" a:class="button"/>
+                </div>
             </div>
-        </lift:PictureSnippet:addPicture>
+        </div>
     </div>
-</lift:surround>
+</div>

@@ -1,4 +1,5 @@
-<lift:surround with="default" at="content">
+<!--suppress ALL -->
+<div id="main" class="lift:surround?with=default;at=content">
     <head>
         <script type="text/javascript">
             //<![CDATA[
@@ -11,19 +12,19 @@
 
             };
             window.onunload = function () {
-            GUnload();
+                GUnload();
             }
 
             function generate(locations) {
-            gm = new GoogleMap();
-            gm.initialize("map_canvas");
+                gm = new GoogleMap();
+                gm.initialize("map_canvas");
 
-            var arr = Array();
-            $.each(locations.stages, function(i, stage) {
-            arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
-            });
-            var tour = gm.createTour(arr);
-            gm.drawTour(tour);
+                var arr = Array();
+                $.each(locations.stages, function(i, stage) {
+                    arr.push(gm.createMarker(new Stage(stage.title, stage.lat, stage.lng)));
+                });
+                var tour = gm.createTour(arr);
+                gm.drawTour(tour);
             }
             //]]>
         </script>
@@ -33,137 +34,121 @@
 
     </head>
     <div class="content">
-        <lift:TourSnippet.showTour>
+        <div class="lift:TourSnippet.showTour">
             <h1>
-                <tour:name/>
+                <span id="tour_name"/>
             </h1>
+
             <p>
-                <tour:description/>
+                <span id="tour_description"/>
             </p>
 
             <table class="list">
-                <th class="startdate">
-                    <lift:loc locid="tour.start">Start</lift:loc>
-                </th>
-                <th class="name">
-                    <lift:loc locid="tour.stage">Reiseabschnitt</lift:loc>
-                </th>
-                <th>
-                    <lift:loc locid="tour.stage.destination">Zielort</lift:loc>
-                </th>
-                <th>
-                    <lift:loc locid="description">Beschreibung</lift:loc>
-                </th>
-                <lift:UsrMgtHelper.showIfTourOwner>
-                    <th class="options">
-                        <lift:loc locid="options">Optionen</lift:loc>
+                <tr>
+                    <th class="startdate">
+                        <span class="lift:loc?locid=tour.start"/>
                     </th>
-                </lift:UsrMgtHelper.showIfTourOwner>
-                <lift:StageSnippet.showStagesFromTour>
-                    <tr>
-                        <td>
-                            <stage:startdate/>
-                        </td>
-                        <td>
-                            <stage:title/>
-                        </td>
-                        <td>
-                            <stage:destination/>
-                        </td>
-                        <td>
-                            <stage:description/>
-                        </td>
-                        <lift:UsrMgtHelper.showIfTourOwner>
+                    <th class="name">
+                        <span class="lift:loc?locid=tour.stage"/>
+                    </th>
+                    <th>
+                        <span class="lift:loc?locid=tour.stage.destination"/>
+                    </th>
+                    <th>
+                        <span class="lift:loc?locid=description"/>
+                    </th>
+                    <div class="lift:UsrMgtHelper.showIfTourOwner">
+                        <th class="options">
+                            <span class="lift:loc?locid=options"/>
+                        </th>
+                    </div>
+                </tr>
+                <div class="lift:StageSnippet.showStagesFromTour">
+                    <tr class="stage">
+                        <td id="startdate"/>
+                        <td id="title"/>
+                        <td id="destination"/>
+                        <td id="description"/>
+                        <div class="lift:UsrMgtHelper.showIfTourOwner">
                             <td>
-                                <stage:edit/>
-                                |
-                                <stage:remove/>
+                                <span id="edit"/> | <span id="remove"/>
                             </td>
-                        </lift:UsrMgtHelper.showIfTourOwner>
+                        </div>
                     </tr>
-                </lift:StageSnippet.showStagesFromTour>
+                </div>
             </table>
-            <lift:UsrMgtHelper.showIfTourOwner>
-                <tour:edit class="button"/>
-                <tour:newStage class="button"/>
-            </lift:UsrMgtHelper.showIfTourOwner>
-            <lift:Menu.item name="tour" a:class="button">
-                <lift:loc locid="back">back</lift:loc>
-            </lift:Menu.item>
+            <div class="bottomnavi">
+                <div class="lift:UsrMgtHelper.showIfTourOwner">
+                    <span class="button" id="tour_edit"/>
+                    <span class="button" id="tour_newStage"/>
+                </div>
+                <div class="lift:Menu.item?name=tour">
+                    <span class="lift:loc?locid=back" a:class="button"/>
+                </div>
+            </div>
 
-        </lift:TourSnippet.showTour>
-
-        <div class="content">
-            <h2>
-                <lift:loc locid="tour.blogEntries">Zugeh&ouml;rige Blogeintr&auml;ge</lift:loc>
-            </h2>
-            <lift:BlogSnippet.showBlogEntriesFromTour>
+            <div class="content">
+                <h2>
+                    <span class="lift:loc?locid=tour.blogEntries"/>
+                </h2>
+            </div>
+            <div class="lift:BlogSnippet.showBlogEntriesFromTour">
                 <table class="blog">
                     <tr>
-                        <td>
-                            <entry:lastUpdated/>
-                        </td>
+                        <td id="lastUpdated"/>
                     </tr>
-                    <tr>
-                        <th>
-                            <entry:title/>
-                        </th>
-                    </tr>
+                    <th id="title"/>
                     <tr>
                         <td>
-                            <entry:preview/>
+                            <span id="preview" />
                             [
-                            <entry:readOn/>
+                            <span id="readOn" />
                             ]
                         </td>
                     </tr>
-                    <lift:UsrMgtHelper.showIfTourOwner>
+                    <div class="lift:UsrMgtHelper.showIfTourOwner">
                         <tr class="editieren">
                             <td>[
-                                <entry:edit/>
-                                |
-                                <entry:remove/>
+                                <span id="edit"/> | <span id="remove"/>
                                 ]
                             </td>
                         </tr>
-                    </lift:UsrMgtHelper.showIfTourOwner>
+                    </div>
                 </table>
-            </lift:BlogSnippet.showBlogEntriesFromTour>
-        </div>
+            </div>
 
-        <div class="content">
-            <h2>
-                <lift:loc locid="tour.gauge">Distanzmesser</lift:loc>
-            </h2>
-            <lift:TravelDistance/>
-        </div>
+            <div class="content">
+                <h2>
+                    <span class="lift:loc?locid=tour.gauge"/>
+                </h2>
 
-        <div class="content">
-            <h2>
-                <lift:loc locid="tour.pictures">Zugeh&ouml;rige Bilder</lift:loc>
-            </h2>
-            <table class="list">
-                <th class="name">
-                    <lift:loc locid="picture">Bilder</lift:loc>
-                </th>
-                <th>
-                    <lift:loc locid="description">Beschreibung</lift:loc>
-                </th>
-                <lift:PictureSnippet.showPicturesFromTour>
-                    <tr>
-                        <td>
-                            <picture:thumbnail/>
-                        </td>
-                        <td>
-                            <picture:description/>
-                        </td>
-                    </tr>
-                </lift:PictureSnippet.showPicturesFromTour>
-            </table>
-        </div>
+                <div class="lift:TravelDistance"/>
 
-        <div class="content" id="map_canvas" style="width:100%;height:400px;">
-            <lift:StageSnippet.renderGoogleMap type="ALL"/>
+            </div>
+
+            <div class="content">
+                <h2>
+                    <span class="lift:loc?locid=tour.pictures"/>
+                </h2>
+                <table class="list">
+                    <th class="name">
+                        <span class="lift:loc?locid=picture"/>
+                    </th>
+                    <th>
+                        <span class="lift:loc?locid=description"/>
+                    </th>
+                    <div class="lift:PictureSnippet.showPicturesFromTour">
+                        <tr class="list">
+                            <td id="picture_thumbnail"/>
+                            <td id="picture_description"/>
+                        </tr>
+                    </div>
+                </table>
+            </div>
+
+            <div class="content" id="map_canvas" style="width:100%;height:400px;">
+                <div class="lift:StageSnippet.renderGoogleMap?type=ALL"/>
+            </div>
         </div>
     </div>
-</lift:surround>
+</div>

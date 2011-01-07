@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift="http://liftweb.net/">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
@@ -13,47 +14,36 @@
 <div class="body">
     <div class="logo">TravelCompanionScala</div>
     <div class="version">Version:
-        <lift:Props key="version"/>
+        <div class="lift:PropsView?key=version"/>
         |
-        <lift:loc locid="lastUpdate">Letzte Aktualisierung</lift:loc>
+        <span class="lift:loc?locid=lastUpdate"/>
         :
-        <lift:Props key="lastUpdate"/>
+        <div class="lift:PropsView?key=lastUpdate"/>
     </div>
     <div class="topnavi">
-        <lift:Menu.group group="main">
-            <menu:bind/>
-        </lift:Menu.group>
+        <div class="lift:Menu.group?group=main"/>
     </div>
 
     <div class="login">
-
-        <lift:UsrMgtHelper.showIfAuthenticated>
-        <span><lift:loc locid="welcome">Willkommen</lift:loc>, <lift:UsrMgtHelper.currentUser>
-            <b>
-                <user:name/>
-            </b>
-        </lift:UsrMgtHelper.currentUser>
-        </span>
-        </lift:UsrMgtHelper.showIfAuthenticated>
-              <span>
-                <lift:Menu.group group="user">
-                    <span>[<menu:bind/>]</span>
-                </lift:Menu.group>
-              </span>
-
+        <div class="lift:UsrMgtHelper.showIfAuthenticated">
+            <span class="lift:loc?locid=welcome"/>,
+            <span class="lift:UsrMgtHelper.currentUser">
+                <span id="name"/>
+            </span>
+        </div>
+        <div class="lift:Menu.group?group=user"/>
     </div>
 
     <div class="content">
-        <lift:bind name="content"/>
+        <!-- <lift:bind/> is not a snippet, it's a marker. -->
+        <div id="content">this div will be replaced</div>
     </div>
 
     <div class="footer">
-        Autoren:
-        <lift:Props key="authors"/>
-        | <a href="http://www.hsr.ch" target="_blank"><lift:loc locid="hsr">Hochschule für Technik Rapperswil</lift:loc></a> |
-        <lift:Language>
-            <lang:link/>
-        </lift:Language>
+        <span class="lift:PropsView?key=versions"/>
+        <span class="lift:Language">
+            <span class="link"/>
+        </span>
     </div>
 
 </div>
