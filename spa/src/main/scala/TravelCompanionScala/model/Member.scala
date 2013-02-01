@@ -2,8 +2,10 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-import _root_.java.util._
+import java.util._
 import org.hibernate.validator.constraints._
+import java.util
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +18,12 @@ import org.hibernate.validator.constraints._
 @Entity
 @Table(name = "members")
 class Member() {
+
+//   val toXML: NodeSeq = {
+//     NodeSeq.Empty
+//  }
+
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   var id: Long = _
@@ -48,17 +56,17 @@ class Member() {
   var zipcode: String = ""
 
   @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL), targetEntity = classOf[Tour])
-  var tours: List[Tour] = new ArrayList[Tour]()
+  var tours: util.List[Tour] = new util.ArrayList[Tour]()
 
   @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
-  val blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
+  val blogEntries: util.List[BlogEntry] = new util.ArrayList[BlogEntry]()
 
   @OneToMany(mappedBy = "owner", cascade = Array(CascadeType.ALL))
-  val pictures: List[Picture] = new ArrayList[Picture]()
+  val pictures: util.List[Picture] = new util.ArrayList[Picture]()
 
   @ManyToMany(cascade = Array(CascadeType.ALL))
   @JoinTable(name = "member_roles", joinColumns = Array(new JoinColumn(name = "member", referencedColumnName = "id")), inverseJoinColumns = Array(new JoinColumn(name = "roles", referencedColumnName = "id")))
-  val roles: List[Role] = new ArrayList[Role]()
+  val roles: util.List[Role] = new util.ArrayList[Role]()
 
   override def equals(that: Any): Boolean = that match {
     case other: Member => id == other.id

@@ -5,6 +5,7 @@ import collection.mutable.Queue
 import java.io.{IOException, BufferedInputStream, DataInputStream}
 import net.liftweb.http.S
 import xml.{Elem, XML}
+import collection.mutable
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,13 +19,13 @@ object GeoCoder {
   val wsAdress: String = "http://ws.geonames.org/search?"
   var locations : Seq[Location] = List()
 
-  def getCurrentLocations(): Seq[Location] = {
+  def getCurrentLocations: Seq[Location] = {
     locations
   }
 
   def findLocationsByName(locationName: String): Seq[Location] = {
     var root: Elem = getElement(locationName)
-    var results = new Queue[Location]()    
+    var results = new mutable.Queue[Location]()
     root \ "geoname" foreach {(geoname) =>
         {
           val loc = new Location()

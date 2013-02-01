@@ -2,7 +2,7 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-import _root_.java.util._
+import java.util._
 import org.hibernate.validator.constraints._
 import javax.validation.constraints._
 
@@ -31,11 +31,11 @@ class Stage {
   @Temporal(TemporalType.DATE)
   @Column(name = "startdate")
   @NotNull
-  var startdate: Date = null;
+  var startdate: Date = null
 
   @OneToOne
   @NotNull
-  var destination: Location = null;
+  var destination: Location = null
 
   @ManyToOne
   @NotNull

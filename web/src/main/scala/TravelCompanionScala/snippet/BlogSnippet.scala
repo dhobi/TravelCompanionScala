@@ -1,14 +1,12 @@
 package TravelCompanionScala.snippet
 
-import _root_.scala.xml.{NodeSeq, Text}
+import scala.xml.NodeSeq
 
-import _root_.net.liftweb._
+import net.liftweb._
 import common.{Full, Empty}
 import http._
-import js.JE.ElemById
-import js.jquery.JqJE.{JqRemove, JqId}
-import js.jquery.{JqJE, JqJsCmds}
-import js.{JE, JsCmds, JsCmd}
+import http.js.jquery.JqJsCmds
+import http.js.JsCmd
 import S._
 import util._
 import Helpers._
@@ -18,6 +16,12 @@ import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
 import scala.collection.JavaConversions._
 import TravelCompanionScala.controller._
+import TravelCompanionScala.controller.DeleteComment
+import TravelCompanionScala.controller.DeleteEntry
+import TravelCompanionScala.controller.EditEntry
+import xml.Text
+import TravelCompanionScala.controller.AddComment
+import TravelCompanionScala.controller.AddEntry
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,10 +65,10 @@ class BlogSnippet {
 
   def render = {
 
-    val entryTemplate = TemplateFinder.findAnyTemplate("blog" :: "_chooseEntry" :: Nil).getOrElse(NodeSeq.Empty)
-    val entryFormTemplate = TemplateFinder.findAnyTemplate("blog" :: "_chooseForm" :: Nil).getOrElse(NodeSeq.Empty)
-    val commentsTemplate = TemplateFinder.findAnyTemplate("blog" :: "_chooseComments" :: Nil).getOrElse(NodeSeq.Empty)
-    val commentFormTemplate = TemplateFinder.findAnyTemplate("blog" :: "_chooseCommentForm" :: Nil).getOrElse(NodeSeq.Empty)
+    val entryTemplate = Templates("blog" :: "_chooseEntry" :: Nil).getOrElse(NodeSeq.Empty)
+    val entryFormTemplate = Templates("blog" :: "_chooseForm" :: Nil).getOrElse(NodeSeq.Empty)
+    val commentsTemplate = Templates("blog" :: "_chooseComments" :: Nil).getOrElse(NodeSeq.Empty)
+    val commentFormTemplate = Templates("blog" :: "_chooseCommentForm" :: Nil).getOrElse(NodeSeq.Empty)
 
 
     def doEditBlogEntry(entry: BlogEntry): JsCmd = {
@@ -87,7 +91,7 @@ class BlogSnippet {
         val mergedc = Model.merge(c)
         Model.removeAndFlush(mergedc)
         BlogCache.cache ! DeleteComment(entry)
-        JqSetHtml(commentDivId + entry.id, renderComments)
+        JqSetHtml(commentDivId + entry.id, renderComments())
       }
 
       def renderComments() = {
@@ -103,7 +107,7 @@ class BlogSnippet {
               else
                 NodeSeq.Empty
             }
-        ))(commentsTemplate)
+        )).apply(commentsTemplate)
       }
 
       def renderNewCommentForm(): NodeSeq = {
@@ -113,7 +117,7 @@ class BlogSnippet {
             merged.comments.add(c)
             Model.mergeAndFlush(merged)
             BlogCache.cache ! AddComment(merged)
-            Hide(commentErrorDivId) & JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
+            Hide(commentErrorDivId) & JqSetHtml(commentDivId + entry.id, renderComments()) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm())
           } else {
             Show(commentErrorDivId)
           }
@@ -133,7 +137,7 @@ class BlogSnippet {
           })(SHtml.ajaxForm(commentFormTemplate))
       }
 
-      JqSetHtml(commentDivId + entry.id, renderComments) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm)
+      JqSetHtml(commentDivId + entry.id, renderComments()) & JqSetHtml(commentFormDivId + entry.id, renderNewCommentForm())
     }
 
     def doRemoveBlogEntry(entry: BlogEntry): JsCmd = {
@@ -167,7 +171,7 @@ class BlogSnippet {
           ".creator *" #> entry.owner.name &
           "#commentsId [id]" #> Text(commentDivId + entry.id) &
           "#commentFormId [id]" #> Text(commentFormDivId + entry.id)
-      ))(entryTemplate) //apply NodeSeq (execution of function NodeSeq => NodeSeq)
+      )).apply(entryTemplate) //apply NodeSeq (execution of function NodeSeq => NodeSeq)
     }
 
     def getEntryForm(e: BlogEntry, html: NodeSeq, submitFunc: () => JsCmd, cancelFunc: () => JsCmd): NodeSeq = {
@@ -232,7 +236,7 @@ class BlogSnippet {
     </div> &
       "#template *" #> NodeSeq.Empty &
       "#newEntry *" #> <div id={newEntryLink} class="content">
-        {doNewEntry}
+        {doNewEntry()}
       </div> &
       "#newEntryForm *" #> <div id={entryFormDivId}></div>
   }
@@ -250,7 +254,7 @@ class BlogSnippet {
   }
 
   def editBlogEntry(html: NodeSeq): NodeSeq = {
-    def doEdit() = {
+    def doEdit() {
       if (validator.is_valid_entity_?(blogEntry)) {
         val newEntry = Model.mergeAndFlush(blogEntry)
         BlogCache.cache ! AddEntry(newEntry)
@@ -274,8 +278,8 @@ class BlogSnippet {
       }),
       "owner" -> SHtml.text(currentEntry.owner.name, currentEntry.owner.name = _),
       "submit" -> SHtml.submit(?("save"), () => {
-        blogEntryVar(currentEntry);
-        doEdit
+        blogEntryVar(currentEntry)
+        doEdit()
       }))
   }
 
@@ -324,7 +328,7 @@ class BlogSnippet {
     listEntries(entries)
   }
 
-  def addComment = {
+  def addComment() = {
     def doAdd(c: Comment) = {
       if (validator.is_valid_entity_?(c))
         Model.mergeAndFlush(c)
@@ -338,7 +342,7 @@ class BlogSnippet {
 
     "#comment_content" #> SHtml.textarea(newComment.content, newComment.content = _) &
       "type=submit" #> SHtml.submit(?("save"), () => {
-        blogEntryVar(currentEntry);
+        blogEntryVar(currentEntry)
         doAdd(newComment)
       })
   }
@@ -359,7 +363,7 @@ class BlogSnippet {
         "#link_remove *" #> {
           if ((comment.member == UserManagement.currentUser) || (blogEntry.owner == UserManagement.currentUser)) {
             SHtml.link("remove", () => {
-              blogEntryVar(comment.blogEntry);
+              blogEntryVar(comment.blogEntry)
               doRemoveComment(comment)
             }, Text(?("remove")))
           } else {

@@ -2,7 +2,7 @@ package TravelCompanionScala.model
 
 import net.liftweb.http._
 
-import js.JE.{JsRaw}
+import js.JE.JsRaw
 import js.JsCmds
 import net.liftweb.sitemap._
 import net.liftweb.sitemap.Loc._
@@ -27,7 +27,7 @@ object UserManagement {
   ///
   val basePath: List[String] = "user" :: Nil
 
-  lazy val testLogginIn = If(loggedIn_? _, S.??("must.be.logged.in"))
+  lazy val testLogginIn = If(loggedIn_? _, S.?("must.be.logged.in"))
 
   // this object holds the logged-in user or is empty. Access is only permitted within this class.
   private object curUsr extends SessionVar[Box[Member]](Empty)
@@ -38,7 +38,7 @@ object UserManagement {
 
   def currentUser: Member = {
     if (curUsr.is.isDefined)
-      curUsr.is.open_!
+      curUsr.is.openOrThrowException("Current user not found")
     else
       new Member
 
@@ -71,13 +71,13 @@ object UserManagement {
 
   /// Menues
   def loginMenuLoc: Box[Menu] =
-    Full(Menu(Loc("Login", loginPath, S.??("login"), loginMenuLocParams)))
+    Full(Menu(Loc("Login", loginPath, S.?("login"), loginMenuLocParams)))
 
   def logoutMenuLoc: Box[Menu] =
-    Full(Menu(Loc("Logout", logoutPath, S.??("logout"), logoutMenuLocParams)))
+    Full(Menu(Loc("Logout", logoutPath, S.?("logout"), logoutMenuLocParams)))
 
   def createUserMenuLoc: Box[Menu] =
-    Full(Menu(Loc("CreateUser", registerPath, S.??("sign.up"), createUserMenuLocParams)))
+    Full(Menu(Loc("CreateUser", registerPath, S.?("sign.up"), createUserMenuLocParams)))
 
   def profileMenuLoc: Box[Menu] =
     Full(Menu(Loc("Profile", profilePath, S.?("member.profile"), profileMenuLocParams)))
@@ -90,7 +90,7 @@ object UserManagement {
    */
   protected def loginMenuLocParams: List[LocParam[Unit]] =
 
-    If(notLoggedIn_? _, S.??("already.logged.in")) ::
+    If(notLoggedIn_? _, S.?("already.logged.in")) ::
             Template(() => wrapIt(login)) :: defaultLocGroup ::
             Nil
 
@@ -99,8 +99,8 @@ object UserManagement {
    * Overwrite in order to add custom LocParams. Attention: Not calling super will change the default behavior!
    */
   protected def createUserMenuLocParams: List[LocParam[Unit]] =
-    Template(() => wrapIt(signup)) ::
-            If(notLoggedIn_? _, S.??("logout.first")) :: defaultLocGroup ::
+    Template(() => wrapIt(signup())) ::
+            If(notLoggedIn_? _, S.?("logout.first")) :: defaultLocGroup ::
             Nil
 
   /**
@@ -171,7 +171,7 @@ object UserManagement {
                   <tr>
                     <td class="desc">
                       <label for="password">
-                        {S.??("password")}
+                        {S.?("password")}
                       </label>
                     </td>
                     <td>
@@ -226,9 +226,9 @@ object UserManagement {
     bind("user", loginXhtml,
       "username" -> SHtml.text(current.name, current.name = _),
       "password" -> SHtml.password(current.password, current.password = _),
-      "submit" -> SHtml.submit(S.??("log.in"), () => {
-        tempUserVar(current);
-        checkLogin
+      "submit" -> SHtml.submit(S.?("log.in"), () => {
+        tempUserVar(current)
+        checkLogin()
       }))
   }
 
@@ -259,7 +259,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="firstname">
-                {S.??("first.name")}
+                {S.?("first.name")}
               </label>
             </td> <td>
               <user:firstname/>
@@ -269,7 +269,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="lastname">
-                {S.??("last.name")}
+                {S.?("last.name")}
               </label>
             </td> <td>
               <user:lastname/>
@@ -309,7 +309,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="email">
-                {S.??("email.address")}
+                {S.?("email.address")}
               </label>
             </td> <td>
               <user:email/>
@@ -318,7 +318,7 @@ object UserManagement {
           <tr>
             <td class="desc">
               <label for="password">
-                {S.??("password")}
+                {S.?("password")}
               </label>
             </td> <td>
               <user:password/>
@@ -343,7 +343,7 @@ object UserManagement {
         if (validationResult.isEmpty) {
           try {
             logInUser(Model.mergeAndFlush(tempUserVar.is))
-            S.notice(S.??("welcome"))
+            S.notice(S.?("welcome"))
             S.redirectTo("/")
           } catch {
             case ee: EntityExistsException => S.error("That user already exists.")
@@ -373,8 +373,8 @@ object UserManagement {
       }
 
       bind("user",
-        memberXhtml,
-        "title" -> S.??("sign.up"),
+        memberXhtml(),
+        "title" -> S.?("sign.up"),
         "username" -%> SHtml.ajaxText(current.name, checkUsername),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
         "lastname" -> SHtml.text(current.surname, current.surname = _),
@@ -383,9 +383,9 @@ object UserManagement {
         "city" -> SHtml.text(current.city, current.city = _),
         "email" -> SHtml.text(current.email, current.email = _),
         "password" -> SHtml.password(current.password, current.password = _),
-        "submit" -> SHtml.submit(S.??("sign.up"), () => {
-          tempUserVar(current);
-          testSignup
+        "submit" -> SHtml.submit(S.?("sign.up"), () => {
+          tempUserVar(current)
+          testSignup()
         }))
     }
 
@@ -396,7 +396,7 @@ object UserManagement {
         if (validationResult.isEmpty) {
           try {
             tempUserVar(Model.mergeAndFlush(tempUserVar.is))
-            S.notice(S.??("profile.updated"))
+            S.notice(S.?("profile.updated"))
             curUsr.set(Full(tempUserVar.is))
             S.redirectTo("/")
           } catch {
@@ -411,7 +411,7 @@ object UserManagement {
       val current = currentUser
 
       bind("user",
-        memberXhtml,
+        memberXhtml(),
         "title" -> S.?("member.editProfile"),
         "username" -> SHtml.text(current.name, current.name = _),
         "firstname" -> SHtml.text(current.forename, current.forename = _),
@@ -422,8 +422,8 @@ object UserManagement {
         "email" -> SHtml.text(current.email, current.email = _),
         "password" -> SHtml.password(current.password, current.password = _),
         "submit" -> SHtml.submit(S.?("save"), () => {
-          tempUserVar(current);
-          testSave
+          tempUserVar(current)
+          testSave()
         }))
     }
 

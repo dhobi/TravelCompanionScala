@@ -17,21 +17,22 @@ import xml.{Text, Node}
 import collection.mutable.Buffer
 import net.liftweb.http._
 import TravelCompanionScala.model.{UserManagement, Model, Tour}
+import collection.mutable
 
 object tourVar extends RequestVar[Tour](new Tour())
 
 object GridAPI extends RestHelper {
 
   //This var is needed  for the construction of the xml
-  var tourData = Buffer[Node] ()
+  var tourData = mutable.Buffer[Node] ()
 
   //a more performant solution with direct sql query
   val resultOption: Option[java.lang.Long] = Model.createNativeQuery("select count(*) from tours").findOne
   val result = resultOption.getOrElse(new java.lang.Long(100))
   val tourSize = toInt(result)
 
-  var page = 1;
-  var rows = 10;
+  var page = 1
+  var rows = 10
 
 
   def getData = {

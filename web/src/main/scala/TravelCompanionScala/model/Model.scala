@@ -16,8 +16,8 @@
 package TravelCompanionScala {
 package model {
 
-import _root_.org.scala_libs.jpa.LocalEMF
-import _root_.net.liftweb.jpa.RequestVarEM
+import org.scala_libs.jpa.LocalEMF
+import net.liftweb.jpa.RequestVarEM
 import javax.validation.{Validation, Validator}
 import net.liftweb.http.S
 import scala.collection.JavaConversions._

@@ -2,7 +2,6 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-import _root_.java.util._
 
 /**
  * Created by IntelliJ IDEA.

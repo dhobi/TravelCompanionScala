@@ -20,8 +20,8 @@ object ImageLogic {
   }
 
   def matcher: LiftRules.DispatchPF = {
-    case req@Req("image" :: "thumbnail" :: TestImage(img) :: Nil, _, GetRequest) => () => serveImage(img, req, true)
-    case req@Req("image" :: "full" :: TestImage(img) :: Nil, _, GetRequest) => () => serveImage(img, req, false)
+    case req@Req("image" :: "thumbnail" :: TestImage(img) :: Nil, _, GetRequest) => () => serveImage(img, req, thumbnail = true)
+    case req@Req("image" :: "full" :: TestImage(img) :: Nil, _, GetRequest) => () => serveImage(img, req, thumbnail = false)
   }
 
   def serveImage(img: Picture, req: Req, thumbnail: Boolean): Box[LiftResponse] = {

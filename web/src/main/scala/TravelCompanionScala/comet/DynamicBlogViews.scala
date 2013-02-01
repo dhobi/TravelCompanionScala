@@ -1,11 +1,10 @@
 package TravelCompanionScala.comet
 
-import _root_.net.liftweb.http._
-import _root_.net.liftweb.common._
-import _root_.net.liftweb.util._
-import _root_.scala.xml._
+import net.liftweb.http._
+import net.liftweb.common._
+import scala.xml._
 import js.jquery.JqJsCmds.JqSetHtml
-import js.{JsCmd, JsCmds}
+import js.JsCmd
 import S._
 
 
@@ -48,8 +47,8 @@ class DynamicBlogViews extends CometActor {
         case CommentUpdate(entries) => this.comments = entries
       }
 
-      JqSetHtml("blog_single", getEntry(e, chooseTemplate("blog", "entryfull", defaultXml))) &
-              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml)))
+      JqSetHtml("blog_single", getEntry(e, chooseTemplate("blog", "entryfull", defaultHtml))) &
+              JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultHtml)))
     }
 
     BlogCache.cache ! RemoveCommentWatcher(this)
@@ -58,7 +57,7 @@ class DynamicBlogViews extends CometActor {
       "comments" -> NodeSeq.Empty,
       "entry" ->
               blog.flatMap(entry =>
-                bind("e", chooseTemplate("blog", "entry", defaultXml),
+                bind("e", chooseTemplate("blog", "entry", defaultHtml),
                   "title" -> Text(entry.title),
                   "content" -> Text(entry.content.substring(0, scala.math.min(entry.content.length, 50))),
                   "readon" -> SHtml.a(() => bindEntryFull(entry), Text(?("blog.readOn"))),
@@ -76,17 +75,17 @@ class DynamicBlogViews extends CometActor {
   }
 
 
-  override def localSetup {
+  override def localSetup() {
     (BlogCache.cache !? AddBlogWatcher(this)) match {
       case BlogUpdate(entries) => this.blog = entries
     }
   }
 
   override def lowPriority: PartialFunction[Any, Unit] = {
-    case BlogUpdate(entries: List[BlogEntry]) => this.blog = entries; reRender(false);
+    case BlogUpdate(entries: List[BlogEntry]) => this.blog = entries; reRender(sendAll = false)
     case CommentUpdate(entries: List[Comment]) => {
-      this.comments = entries;
-      partialUpdate(JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultXml))))
+      this.comments = entries
+      partialUpdate(JqSetHtml("blog_comments", getComments(chooseTemplate("blog", "comments", defaultHtml))))
     }
   }
 }

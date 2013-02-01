@@ -5,6 +5,7 @@ import javax.persistence._
 import java.util.{Date, ArrayList}
 import org.hibernate.validator.constraints._
 import javax.validation.constraints._
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +46,7 @@ class BlogEntry {
   var owner: Member = null
 
   @OneToMany(mappedBy = "blogEntry", cascade = Array(CascadeType.ALL), targetEntity = classOf[Comment])
-  var comments: java.util.List[Comment] = new ArrayList[Comment]()
+  var comments: java.util.List[Comment] = new util.ArrayList[Comment]()
 }
 
 }

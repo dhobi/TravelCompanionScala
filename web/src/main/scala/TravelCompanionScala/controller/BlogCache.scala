@@ -1,7 +1,7 @@
 package TravelCompanionScala.controller
 
-import _root_.net.liftweb.actor._
-import _root_.net.liftweb.common._
+import net.liftweb.actor._
+import net.liftweb.common._
 import TravelCompanionScala.model.{Comment, UserManagement, Model, BlogEntry}
 
 class BlogCache extends LiftActor {
@@ -9,9 +9,8 @@ class BlogCache extends LiftActor {
   private var sessions: List[SimpleActor[Any]] = List()
 
   private var csessions: Map[Long,List[SimpleActor[Any]]] = Map()
-  private var entry : BlogEntry = _
 
-  def getEntries(): List[BlogEntry] = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
+  def getEntries: List[BlogEntry] = Model.createNamedQuery[BlogEntry]("findEntriesByOthers").setParams("owner" -> UserManagement.currentUser).findAll.toList
 
   def getComments(blogEntry: BlogEntry): List[Comment] = Model.createNamedQuery[Comment]("findCommentsByEntry").setParams("entry" -> blogEntry).findAll.toList
 

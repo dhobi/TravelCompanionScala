@@ -1,10 +1,9 @@
 package TravelCompanionScala {
 package snippet {
 
-import _root_.scala.xml.{NodeSeq, Text}
+import scala.xml.Text
 
-import _root_.net.liftweb._
-import common.{Box}
+import net.liftweb._
 import http._
 import S._
 import util._
@@ -59,7 +58,7 @@ class TourSnippet {
       (if (toCheck.owner == null) {S.error(S.?("tour.noOwner")); false} else true)).forall(_ == true)
 
   def editTour = {
-    def doEdit() = {
+    def doEdit() {
       if (is_valid_Tour_?(tour)) {
         Model.mergeAndFlush(tour)
         S.redirectTo("/tour/list")
@@ -74,7 +73,7 @@ class TourSnippet {
 
     "#tour_name" #> SHtml.text(currentTour.name, currentTour.name = _) &
     "#tour_description" #> SHtml.textarea(currentTour.description, currentTour.description = _) &
-    "type=submit" #> SHtml.submit(?("save"), () => {tourVar(currentTour); doEdit})
+    "type=submit" #> SHtml.submit(?("save"), () => {tourVar(currentTour); doEdit()})
   }
 
 
@@ -89,7 +88,7 @@ class TourSnippet {
               "#tour_edit *" #> SHtml.link("edit", () => tourVar(tour), Text(?("edit"))) &
               "#tour_view *" #> SHtml.link("view", () => tourVar(tour), Text(?("view"))) &
               "#tour_remove *" #> SHtml.link("remove", () => {
-                tourVar(tour); doRemove
+                tourVar(tour); doRemove()
               }, Text(?("remove")))
     })
   }

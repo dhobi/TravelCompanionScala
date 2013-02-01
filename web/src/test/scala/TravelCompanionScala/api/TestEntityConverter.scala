@@ -47,7 +47,7 @@ class TestEntityConverter {
 
 
   @Before
-  def doInitialization {
+  def doInitialization() {
     testEntry = new BlogEntry
     testEntry.id = 5
     testEntry.title = "Test Eintrag"
@@ -67,18 +67,18 @@ class TestEntityConverter {
   }
 
   @After
-  def doCleanUp = {
+  def doCleanUp() {
     testEntry = null
   }
 
   @Test
-  def convertXml() = {
+  def convertXml() {
     val asXml = testEntry.toXml
     assertEquals("XML", asXml.flatMap(n => Utility.trim(n)), getCorrectXml(testEntry).flatMap(n => Utility.trim(n)))
   }
 
   @Test
-  def fromXml() = {
+  def fromXml() {
     val e = getCorrectXml(testEntry).entryFromXml
     assertEquals(testEntry.id, e.id)
     assertEquals(testEntry.title.trim, e.title.trim)
@@ -90,7 +90,7 @@ class TestEntityConverter {
   }
 
   @Test
-  def convertJson() = {
+  def convertJson() {
     assertTrue(true)
   }
 

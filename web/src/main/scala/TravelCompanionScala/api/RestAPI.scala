@@ -1,13 +1,11 @@
 package TravelCompanionScala.api
 
-import net.liftweb.http.rest.RestHelper
 import net.liftweb.util.Helpers.toLong
 import TravelCompanionScala.model.EntityConverter._
 import net.liftweb.http.rest._
 import net.liftweb.common._
-import xml.{Node, Elem, NodeSeq, UnprefixedAttribute}
+import xml.Node
 import TravelCompanionScala.controller._
-import net.liftweb.json.Xml
 import TravelCompanionScala.model._
 
 /**
@@ -87,11 +85,9 @@ object RestAPI extends RestHelper {
     mergedc.toXml
   }
 
-  implicit def cvt: JxCvtPF[Object] = {
-    case (JsonSelect, n: Elem, _) => Xml.toJson(n)
-    case (XmlSelect, n: Elem, _) => n
-    case (JsonSelect, o: Object, _) => o.toJson
-    case (XmlSelect, o: Object, _) => o.toXml
+  implicit def cvt: JxCvtPF[EntityConverter] = {
+    case (JsonSelect, o: EntityConverter, _) => o.toJson
+    case (XmlSelect, o: EntityConverter, _) => o.toXml
   }
 
   serve {
@@ -108,7 +104,7 @@ object RestAPI extends RestHelper {
     //    case "api" :: "blog" :: AsBlogEntry(entry) :: "comment" :: AsComment(comment) :: Nil XmlDelete _ if entry.comments.contains(comment) => removeComment(comment, entry)
   }
 
-  serveJx {
+  serveJx[EntityConverter] {
     // GET /api/tour lists all tours and stages
     case Get("api" :: "tour" :: Nil, _) => Full(listTours)
 

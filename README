@@ -5,3 +5,11 @@ cd web
 mvn jetty:run
 
 Then point your favorite browser to http://localhost:9090/
+
+This is a fork from:
+https://github.com/rmuri/TravelCompanionScala
+
+There is some doc on the initial project.
+The latest lift doc is at :
+http://liftweb.net
+http://cookbook.liftweb.net

@@ -2,9 +2,10 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-import _root_.java.util._
+import java.util._
 import org.hibernate.validator.constraints._
 import javax.validation.constraints._
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,10 +34,10 @@ class Tour {
   var owner: Member = null
 
   @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[Stage])
-  var stages: List[Stage] = new ArrayList[Stage]()
+  var stages: util.List[Stage] = new util.ArrayList[Stage]()
 
   @OneToMany(mappedBy = "tour", cascade = Array(CascadeType.ALL), targetEntity = classOf[BlogEntry])
-  var blogEntries: List[BlogEntry] = new ArrayList[BlogEntry]()
+  var blogEntries: util.List[BlogEntry] = new util.ArrayList[BlogEntry]()
 
 }
 

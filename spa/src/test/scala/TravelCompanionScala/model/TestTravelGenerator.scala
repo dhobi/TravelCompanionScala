@@ -14,20 +14,21 @@ import org.junit.Before
 import org.junit.After
 import javax.persistence.{Persistence, EntityManagerFactory}
 import java.util.{Date, ArrayList}
+import java.util
 
 class TestTravelGenerator {
   var emf: EntityManagerFactory = _
 
   @Before
-  def initEMF() = {
+  def initEMF() {
     try {
       emf = Persistence.createEntityManagerFactory("jpaweb")
     } catch {
       case e: Exception => {
-        def printAndDescend(ex: Throwable): Unit = {
-          println(e.getMessage())
-          if (ex.getCause() != null) {
-            printAndDescend(ex.getCause())
+        def printAndDescend(ex: Throwable) {
+          println(e.getMessage)
+          if (ex.getCause != null) {
+            printAndDescend(ex.getCause)
           }
         }
         printAndDescend(e)
@@ -36,14 +37,14 @@ class TestTravelGenerator {
   }
 
   @After
-  def closeEMF() = {
+  def closeEMF() {
     if (emf != null) emf.close()
   }
 
   @Test
-  def generate() = {
+  def generate() {
     var em = emf.createEntityManager()
-    val tx = em.getTransaction()
+    val tx = em.getTransaction
 
     tx.begin()
 
@@ -72,9 +73,9 @@ class TestTravelGenerator {
       var location: Location = createDummyLocation
       em.persist(location)
 
-      var stages = new ArrayList[Stage]()
+      var stages = new util.ArrayList[Stage]()
       var stage = new Stage
-      stage.startdate = new Date;
+      stage.startdate = new Date
       stage.description = "startbeschreibung"
       stage.name = "Start"
       stage.tour = tour
@@ -82,7 +83,7 @@ class TestTravelGenerator {
       em.persist(stage)
 
       stages.add(stage)
-      tour.stages = stages;
+      tour.stages = stages
       em.merge(tour)
     }
 

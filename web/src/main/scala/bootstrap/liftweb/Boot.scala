@@ -15,11 +15,11 @@
  */
 package bootstrap.liftweb
 
-import _root_.net.liftweb.sitemap._
-import _root_.net.liftweb.sitemap.Loc._
+import net.liftweb.sitemap._
+import net.liftweb.sitemap.Loc._
 import net.liftweb.http._
-import net.liftweb.widgets.tablesorter.TableSorter
-import net.liftweb.widgets.autocomplete.AutoComplete
+import net.liftmodules.widgets.tablesorter.TableSorter
+import net.liftmodules.widgets.autocomplete.AutoComplete
 import provider.{HTTPCookie, HTTPRequest}
 import TravelCompanionScala.model._
 import scala.collection.JavaConversions._
@@ -35,7 +35,7 @@ import TravelCompanionScala.api.{GridAPI, RestAPI}
  * to modify lift's environment
  */
 class Boot {
-  def boot {
+  def boot() {
     ///http://groups.google.com/group/liftweb/browse_thread/thread/c95fcc4ce801b06c/d293bd49a9e68007
     ///UTF8 vs. tomcat
     //LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
@@ -59,14 +59,7 @@ class Boot {
       case _ => "text/html; charset=utf-8"
     }
 
-    //Do an easy doctype management
-    //http://github.com/zhaotq/playliftweb/blob/master/survey/src/bootstrap/liftweb/Boot.scala
-    /*/TODO Still needed ?
-    ResponseInfo.docType = {
-      case _ if S.getDocType._1 => S.getDocType._2
-      case _ => Full(DocType.xhtmlStrict)
-    }
-    */
+
     // where to search for snippets, views, etc
     LiftRules.addToPackages("TravelCompanionScala")
     LiftRules.resourceNames = "TravelCompanion" :: "Member" :: "Tour" :: "Blog" :: "Picture" :: Nil
@@ -84,7 +77,7 @@ class Boot {
     // Build SiteMap (used for navigation, access control...)
     val LoggedIn = If(
       () => UserManagement.loggedIn_?,
-      () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.??("must.be.logged.in")))))
+      () => RedirectWithState(UserManagement.loginPageURL, RedirectState(() => S.error(S.?("must.be.logged.in")))))
 
     val EntryModification = If(
       () => {
@@ -108,7 +101,7 @@ class Boot {
       },
       () => RedirectWithState("/accessrestricted", RedirectState(() => S.error(S.?("member.operation.denied")))))
 
-    // new DSL Syntax for creating Menu Entries, since Lift2.0-M5
+
     val tourMenuEntries: List[Menu] = List(
       Menu("tour", S ? "tour") / "tour" / "list" >> LocGroup("main") >> LocGroup("tour"),
       Menu("tour_view", "Reise anzeigen") / "tour" / "view" >> LocGroup("tour"),
@@ -159,14 +152,6 @@ class Boot {
         stageVar(stage)
         RewriteResponse("tour" :: "stage" :: "view" :: Nil)
       }
-      //      case RewriteRequest(
-      //      ParsePath("tour" :: "view" :: Nil, _, _, _), _, _) => {
-      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: Nil)
-      //      }
-      //      case RewriteRequest(
-      //      ParsePath("tour" :: "stage" :: "view" :: Nil, _, _, _), _, _) => {
-      //        RewriteResponse("tour" :: "view" :: tourVar.get.name :: stageVar.get.name :: Nil)
-      //      }
     })
 
     ///Copied from: https://www.assembla.com/wiki/show/liftweb/Internationalization
@@ -179,7 +164,7 @@ class Boot {
           HTTPCookie("language", Full(in),
             Empty, Full("/"), Full(2629743), Empty, Empty)
         def localeFromString(in: String): Locale = {
-          val x = in.split("_").toList;
+          val x = in.split("_").toList
           sessionLanguage(new Locale(x.head, x.last))
           sessionLanguage.is
         }
@@ -192,7 +177,7 @@ class Boot {
           case f@Full(selectedLocale) =>
             S.addCookie(localeCookie(selectedLocale))
             //hacky?
-            S.session.map(_.findComet("DynamicBlogViews").foreach(_ ! ReRender(true)))
+            S.session.map(_.findComet("DynamicBlogViews").foreach(_ ! ReRender(doAll = true)))
             Helpers.tryo(localeFromString(selectedLocale))
           case _ => calcLocale
         }
@@ -204,9 +189,9 @@ class Boot {
 
 
     //Widgets
-    TableSorter.init
-    AutoComplete.init
-    Gauge.init
+    TableSorter.init()
+    AutoComplete.init()
+    Gauge.init()
   }
 }
 

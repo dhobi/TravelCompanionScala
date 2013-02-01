@@ -1,20 +1,19 @@
 package TravelCompanionScala.snippet
 
-import _root_.scala.xml.{NodeSeq, Text}
+import scala.xml.{NodeSeq, Text}
 
-import _root_.net.liftweb._
+import net.liftweb._
 import common._
 import http._
 import S._
 import util._
 import Helpers._
-import net.liftweb.imaging._
+import net.liftmodules.imaging._
 
 import TravelCompanionScala.model._
 import java.awt.image.BufferedImage
 import java.io.{ByteArrayOutputStream, ByteArrayInputStream, InputStream}
 import javax.imageio.ImageIO
-import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,7 +34,7 @@ class PictureSnippet {
 
   var fileHolder: Box[FileParamHolder] = Empty
 
-  def addPicture = {
+  def addPicture() = {
     val currentPicture = new Picture
 
     def createThumbnail(data: Array[Byte]): Array[Byte] = {

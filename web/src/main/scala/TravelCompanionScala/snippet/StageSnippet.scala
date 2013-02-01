@@ -1,13 +1,11 @@
 package TravelCompanionScala.snippet
 
-import _root_.scala.xml.{NodeSeq, Text}
+import scala.xml.{NodeSeq, Text}
 
-import _root_.net.liftweb._
-import common.{Box}
+import net.liftweb._
 import http._
 
 import js.JsCmds._
-import js.JE.{JsRaw, JsArray}
 import js.JsCmds.JsCrVar
 import js.{JsObj, JE, JsCmd}
 import S._
@@ -16,7 +14,7 @@ import Helpers._
 import JE._
 import TravelCompanionScala.model._
 import java.text.SimpleDateFormat
-import widgets.autocomplete.AutoComplete
+import net.liftmodules.widgets.autocomplete.AutoComplete
 import TravelCompanionScala.api.tourVarFromAPI
 
 /**
@@ -38,7 +36,7 @@ class StageSnippet {
     val currentStage = stage
     stage.tour = tourVar.is
 
-    def doEdit() = {
+    def doEdit() {
       if (validator.is_valid_entity_?(stage)) {
         Model.mergeAndFlush(stage)
         val currentTour = tourVar.is
@@ -46,7 +44,7 @@ class StageSnippet {
       }
     }
 
-    def setLocation(name: String, s: Stage) = {
+    def setLocation(name: String, s: Stage) {
       val geos: List[String] = name.split(",").toList.map(str => str.trim)
       var loc = GeoCoder.getCurrentLocations.find(
         loc => (geos.contains(loc.name) && geos.contains(loc.countryname))
@@ -72,7 +70,7 @@ class StageSnippet {
     "#stage_description" #> SHtml.textarea(currentStage.description, currentStage.description = _) &
     "#stage_startdate" #> SHtml.text(Util.slashDate.format(currentStage.startdate), (p: String) => currentStage.startdate = Util.slashDate.parse(p)) &
     "type=submit" #> SHtml.submit(S.?("save"), () => {
-        stageVar(currentStage); tourVar(currentTour); doEdit
+        stageVar(currentStage); tourVar(currentTour); doEdit()
       })
    }
 
@@ -137,12 +135,12 @@ class StageSnippet {
               "#destination *" #> stage.destination.name &
               "#description *" #> stage.description &
               "#edit *" #> SHtml.link("/tour/stage/edit", () => {
-                stageVar(stage); tourVar(currentTour);
+                stageVar(stage); tourVar(currentTour)
               }, Text(?("edit"))) &
               "#remove * " #> SHtml.link("remove", () => {
-                stageVar(stage);
-                tourVar(currentTour);
-                doRemove
+                stageVar(stage)
+                tourVar(currentTour)
+                doRemove()
               }, Text(?("remove")))
     })
   }

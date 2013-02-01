@@ -2,7 +2,7 @@ package TravelCompanionScala {
 package model {
 
 import javax.persistence._
-import _root_.java.util._
+import java.util._
 import javax.validation.constraints._
 import org.hibernate.validator.constraints.NotEmpty
 
